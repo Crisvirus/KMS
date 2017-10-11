@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+		<!-- include font awesome icons fonts -->
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+		<!-- include jQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="https://www.google.com/jsapi"></script>
+		<script src="http://maps.google.com/maps/api/js?key=AIzaSyBriptHm8-Tc0gjfsrM0FgD626h8Ve13iQ"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Travel Companion</title>
+    </head>
+    <body>
+    	<script src="js/Chart.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <div id="app">
+            <div id="side-menu">
+				<ul>
+					<li data-action="close-menu">
+						<i class="fa fa-times"></i> Close Menu
+					</li>
+					<li>
+					  <a href="#home">
+					    <i class="fa fa-home"></i> Home
+					  </a>
+					</li>
+					<li>
+					  <a href="#login">
+					    <i class="fa fa-sign-in"></i> Login
+					  </a>
+					</li>
+					<li>
+					  <a href="#targets">
+					    <i class="fa fa-id-card-o" aria-hidden="true"></i>Targets
+					  </a>
+					</li>
+				</ul>
+			</div>
+			<div id="content">
+				<div id="header">
+					<h1>Killing Me Softly</h1>
+					<button class="menu-toggle" data-action="toggle-menu"><i class="fa fa-bars"></i></button>
+				</div>
+				<div data-role="page" id="home">
+					Home
+				</div>
+				<div data-role="page" id="login">
+					<div id="login_controls">
+						<input type="text" id="username">
+						<br>
+						<input type="text" id="password">
+						<button class="btn raised " id="butt1">Login</button>
+					</div>
+					<div id="chat_box">
+					</div>
+				</div>
+				<div data-role="page" id="targets">
+					<h1>Targets</h1>
+					<br>
+					<div id="taretcards"></div>
+				</div>
+				<div data-role="page" id="trip">
+					Trip
+					<div id="trip_input">
+						<input type="text" id="origin">
+						<br>
+						<input type="text" id="destination">
+						<button class="btn raised " id="butt5">Search</button>
+					</div>
+					<div id="trip_box">
+					</div>
+				</div>
+				<div data-role="page" id="rasp">
+					Raspberry
+					<button class="btn raised " id="butttemp">Temperatura</button>
+				    <button class="btn raised " id="buttlum">Luminozitate</button>
+				    <button class="btn raised " id="buttled">Aprinde</button>
+				    <div id="chart_div"></div>
+				</div>
+				<div data-role="page" id="aud">
+				</div>
+				<div data-role="page" id="templates">
+					Templates
+					<div class="card">
+						<div class="img-container">
+							<img src="https://i.imgur.com/z671OfK.jpg">
+						</div>
+						<h3 class="title">Title</h3>
+						<div class="content">
+							<p>Short Description of article lorem ipsum ...</p>
+						</div>
+						<footer style="text-align:right;">
+							<a class="btn flat">LIKE</a>
+							<a class="btn flat btn-green">READ MORE</a>
+						</footer>
+					</div>
+					<div class="target_card">
+						<div class="image">
+							<img src="https://i.imgur.com/z671OfK.jpg">
+						</div>
+						<h3 class="name">Title</h3>
+						<div class="bio">
+							<p>Short Description of article lorem ipsum ...</p>
+						</div>
+						<br>
+						<h2> Cum il omori? </h2>
+						<div class="kill_method">
+							<p>How to kill him:</p>
+						</div>
+						<!-- <footer style="text-align:left;">
+							<a class="btn flat">LIKE</a>
+							<a class="btn flat btn-green">READ MORE</a>
+						</footer> -->
+					</div>
+					<div class="mesaj">
+						<h3 class="title">Title</h3>
+						<div class="content">
+							<p>Short Description of article lorem ipsum ...</p>
+						</div>
+					</div>
+					<div class="weathercard">
+						<div class="img-container">
+							<img src="http://www.nnergix.com/sites/default/files/styles/medium/public/field/image-product/weather-forecast_0.jpg?itok=FmPPJ2_-">
+						</div>
+						<h3 class="title">Title</h3>
+						<div class="content">
+							<p>Short Description of article lorem ipsum ...</p>
+						</div>
+						<footer style="text-align:right;">
+							<a class="btn flat sters" >Done</a>
+						</footer>
+					</div>
+				</div>
+
+			</div>
+        </div>
+        
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
+
+

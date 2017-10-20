@@ -16,12 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+var domeniu="http://ec2-18-216-36-69.us-east-2.compute.amazonaws.com:3000/kms";
 var iter=9;
 var imageSearch;
 var flightPlanCoordinates=[];
 var onoff=0;
 var tmp;
 var lum;
+var Token;
+var group_id;
+var target;
+var dead_or_alive;
+var user;
+var pass;
 google.load('search', '1');
 var test_news=[
 	{
@@ -84,7 +91,6 @@ var app = {
 			app.showPage(hash[0]);
 		}	
 		this.updateNews();
-		this.updateTarget();
 		//this.makeChart();
 		//this.getSettings();
 		//this.getACC();
@@ -99,24 +105,25 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-    	setInterval(app.wakeup, 5000);
+    	//setInterval(app.wakeup, 5000);
     	//setInterval(app.chatGet, 1000);
     	// setInterval(function(){
     	// 	navigator.vibrate(1000);
     	// },5000);
-		$("#butttemp").click(app.ShowTemp);
-		$("#clearall").click(function()
-			{
-				console.log("aici")
-				$("#wea>#weacards").html("");
-			});
-		$("#buttlum").click(app.ShowLum);
-		$("#buttled").click(app.Led);
-    	$("#chat_controls>#butt1").click(app.chatSend);
-    	$("#colorsett>#butt2").click(app.colorSet);
-    	$("#images>#butt3").click(app.Photo);
-    	$("#wea>#buttcity").click(app.getWeather);
-    	$("#trip_input>#butt5").click(app.getTrip);
+		// $("#butttemp").click(app.ShowTemp);
+		// $("#clearall").click(function()
+		// 	{
+		// 		console.log("aici")
+		// 		$("#wea>#weacards").html("");
+		// 	});
+		// $("#buttlum").click(app.ShowLum);
+		$("#buttlogin").click(app.Login);
+		$("#buttdeath").click(app.Death);
+  //   	$("#chat_controls>#butt1").click(app.chatSend);
+  //   	$("#colorsett>#butt2").click(app.colorSet);
+  //   	$("#images>#butt3").click(app.Photo);
+  //   	$("#wea>#buttcity").click(app.getWeather);
+  //   	$("#trip_input>#butt5").click(app.getTrip);
         document.addEventListener('deviceready', this.onDeviceReady, false);
 		window.addEventListener('hashchange', this.hashChange, false);
 		//window.addEventListener("batterystatus", onBatteryStatus, false);
@@ -159,6 +166,10 @@ var app = {
 		if( document.getElementById(id).getAttribute("data-role") == "page"){
 			$("*[data-role=page]").hide();
 			$("#"+id).show();
+			if (id == "targets")
+			{
+				this.updateTarget();
+			}
 			app.hideMenu();
 		}
 	},
@@ -187,6 +198,71 @@ var app = {
     );
     app.chatGet();
   	},
+  	Login:function(){
+  		user = $("#username").val();
+		pass = $("#password").val();
+		console.log("Incerc post");
+		// $.post("http://18.216.36.69:3000/kms/login", JSON.stringify(
+  //       	{"date":{
+		// 	    "username":user,
+		// 	    "password":pass
+		// 	}
+		// 	}), function(response){
+		// 		console.log(response);
+		// }
+  //   	);
+  		$.ajax({
+		    url: domeniu+'/login',
+		    type: 'post',
+		    data: JSON.stringify({"date":{
+			    "username":user,
+			    "password":pass
+			}}),
+		    headers: {
+		        "Content-Type": "application/json"
+		    },
+		    dataType: 'json',
+		    success: function (data) {
+		        console.info(data.data.token);
+		        Token=data.data.token;
+		        localStorage.setItem('Token',Token);
+		        group_id=data.data.group_id;
+		        dead_or_alive=data.data.dead;
+		        if(dead_or_alive)
+		        {
+		        	$("#dead_or_alive").append("Yep!");
+		        }
+		        else
+		        {
+		        	$("#dead_or_alive").append("Not yet!");
+		        }
+		        $("#login").html("<h2>Success!</h2>");
+		    },
+		    fail: function (data){
+		    	$("#login").append("<h2>Fail!</h2>");
+		    	$("#login").append("<h2>"+data.reason+"</h2>");
+		    }
+		});
+  	},
+  	Death:function()
+  	{
+  		console.log("I killed myself");
+  		$.ajax({
+		    url: domeniu+'/groups/'+group_id+'/dead',
+		    type: 'post',
+		    data: JSON.stringify({"date":{
+			    "username":user
+			}}),
+		    headers: {
+		        "Content-Type": "application/json",
+		        "token": Token
+		    },
+		    dataType: 'json',
+		    success: function (data) {
+		        console.info(data);
+		    }
+		});
+  	},
   	chatGet: function(){
   		$("#chat_box").html("");
   		$.get('http://192.168.1.213:8000/api', function(msgs){
@@ -208,24 +284,43 @@ var app = {
 
   	},
   	updateTarget: function(){
-		var target = test_target;
-		$("#targets").html(""); // we empty the contents of the page
-		var card = $("#templates>.target_card").clone();
-		card.find(".name").html(target.name); //set .title element of the card
-		card.find(".bio").html(target.bio); //set .content element of the card
-		card.find(".kill_method").html(target.kill_method); //set .content element of the card
-		card.find(".image>img").attr("src",target.image); //set src attribute of the image
-		card.attr("data-pk",target.pk); //set a custom pk attribute to store the pk
-		card.find(/*selector of the read more button*/).click(function()
-		{
-	  	//on click display in console the pk of the clicked card
-	  		console.log($(this).parent().parent().attr("data-pk"));
-			});
-		$("#targets").append(card); //add card to page
+  		$.ajax({
+		    url: domeniu+'/groups/'+group_id,
+		    type: 'get',
+		    headers: {
+		        "Content-Type": "application/json",
+		        "token": Token
+		    },
+		    dataType: 'json',
+		    success: function (data) {
+		        target=data;
+		        console.info(data);
+		        $("#target_cards_div").html(""); // we empty the contents of the page
+				var card = $("#templates>.target_card").clone();
+				card.find(".name").html(target.data.target); //set .title element of the card
+				card.find(".bio").html(target.data.method_description); //set .content element of the card
+				card.find(".kill_method").html(target.data.kill_method); //set .content element of the card
+				card.find(".image>img").attr("src",target.data.img); //set src attribute of the image
+				card.attr("data-pk",target.pk); //set a custom pk attribute to store the pk
+				card.find(/*selector of the read more button*/).click(function()
+				{
+			  	//on click display in console the pk of the clicked card
+			  		console.log($(this).parent().parent().attr("data-pk"));
+					});
+				$("#target_cards_div").append(card); //add card to page
+		    },
+		    fail: function (data) {
+		        console.info(data);
+		    }
+		});
+		// var target = test_target;
+		console.log("Target e: "+target);
+		
 	},
   	updateNews: function(){
 		var news = test_news;
 		$("#home").html(""); // we empty the contents of the page
+		$("#home2").html(""); // we empty the contents of the page
 		for(var i=0; i<news.length; i++)
 		{
 			var card = $("#templates>.card").clone();
@@ -239,6 +334,7 @@ var app = {
 		  		console.log($(this).parent().parent().attr("data-pk"));
 				});
 		$("#home").append(card); //add card to page
+		$("#home2").append(card); //add card to page
 		}
 	},
 	addData: function(){
@@ -594,22 +690,6 @@ var app = {
 				chart.draw(chartData, options);
 			});
 		}
-	},
-	wakeup: function()
-	{
-		$.getJSON("http://192.168.1.213/phone",function(res)
-			{
-				console.log(res.ok)
-				var ok=res.ok;
-				if(ok==1) 
-				{
-					navigator.vibrate(5000);
-				}
-				else
-				{
-					navigator.vibrate(0);
-				}
-			});
 	},
 
 	getTrip: function()
